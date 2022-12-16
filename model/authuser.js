@@ -5,11 +5,11 @@ const UserSchema = new Schema({
     type: String,
     min: 3,
     max: 10,
-    password: {
-      type: String,
+  },
+  password: {
+    type: Number,
       min: 8,
       min: 15,
-    },
   },
 });
 
