@@ -1,14 +1,13 @@
 const express = require("express");
-const connect= require("./db/db");
-const userRoleRouter= require("./Routes/userrole");
+const connect = require("./db/db");
+const userRoleRouter = require("./Routes/userrole");
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-app.get("users", userRoleRouter)
+app.use("/users", userRoleRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello");
@@ -16,7 +15,7 @@ app.get("/", (req, res) => {
 
 let PORT = process.env.PORT || 8080;
 
-app.listen(PORT, async() => {
-    await connect
+app.listen(PORT, async () => {
+  await connect;
   console.log("Server Started on http://localhost:8080");
 });
