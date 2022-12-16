@@ -46,7 +46,7 @@ authRouter.post("/usererr", async(req,res)=>{
 authRouter.post("/login", async(req,res)=>{
     const { username, password } = req.body;
     const correctUser= await User.find( {username, password} );
-    console.log(correctUser);
+    // console.log(correctUser);
 
     if(correctUser.length < 1 || !correctUser || !password){
         return res.status(400).send( {message: "Username/Password is invalid"} )
@@ -61,6 +61,15 @@ authRouter.post("/login", async(req,res)=>{
     return res.status(200).send({  "success":true, token: token,   refreshToken: refreshToken, _id  })
 })
 
-
+authRouter.post("/newToken", (req, res) => {
+    const refreshToken = req.headers["authorization"].split(" ")[1];
+    const validation = Jwt.verify(refreshToken, "REFRESHPASSWORD");
+    if (validation) {
+      const newPrimaryToken = Jwt.sign({ username }, "SECRET", {
+        expiresIn: "1 hour",
+      });
+      return res.send({ token: newPrimaryToken });
+    }
+  });
 
 module.exports= authRouter
