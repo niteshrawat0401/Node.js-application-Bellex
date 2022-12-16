@@ -1,5 +1,6 @@
 const {Router} = require("express");
 const User= require("../model/authuser")
+const Jwt = require("jsonwebtoken");
 
 const authRouter= Router();
 
@@ -11,7 +12,7 @@ authRouter.post("/signup", async(req,res)=>{
         try {
           return res
             .status(201)
-            .send({success: true ,message: "Sign up Successfully", newuser: success["_doc"] });
+            .send({"success": true ,message: "Sign up Successfully", newuser: success["_doc"] });
         } catch (error) {
           return res.status(500).send({ message: "Something wen wrong" });
         }
@@ -42,6 +43,24 @@ authRouter.post("/usererr", async(req,res)=>{
 
 
 // Log In
-// authRouter.post
+authRouter.post("/login", async(req,res)=>{
+    const { username, password } = req.body;
+    const correctUser= await User.find( {username, password} );
+    console.log(correctUser);
+
+    if(correctUser.length < 1 || !correctUser || !password){
+        return res.status(400).send( {message: "Username/Password is invalid"} )
+    } 
+
+    const token= Jwt.sign({ username}, "SECRET", {expiresIn: "1 hour"});
+
+    const refreshToken= Jwt.sign({username}, "REFRESHPASSWORD", {expiresIn: "20days"});
+
+    let { _id } = correctUser[0];
+    console.log(correctUser[0]);
+    return res.status(200).send({  "success":true, token: token,   refreshToken: refreshToken, _id  })
+})
+
+
 
 module.exports= authRouter
