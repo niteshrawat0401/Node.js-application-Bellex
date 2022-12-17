@@ -41,7 +41,7 @@ expenseRouter.post("/:userid/invalid" ,async (req, res)=>{
         const varification = Jwt.verify(token, "SECRET");
         if (varification) {
           const user = await ExpenseData.findOne({ _id: id });
-          res.send({ message: "user not wrong" });
+          res.send({ message: "user wrong" });
         } else {
           return res.status(401).send({"success" : false,message: "Unauthorized"});
         }
@@ -53,10 +53,32 @@ expenseRouter.post("/:userid/invalid" ,async (req, res)=>{
 // GET /expense/summary
 expenseRouter.get("/:userid/expense/summary", async (req, res) => {
     const { userid } = req.params;
+    const token = req.headers["authorization"].split(" ")[1];
     const userSummary = await ExpenseData.find({ userId: userid });
-   const {title,amount,date} = userSummary
-    res.send(userSummary);
+    if(token){
+        res.send(userSummary);
+    }
+    else{
+        res.send(0)
+    }
   });
+
+  expenseRouter.get("/:userid/expense/summary" ,async (req, res)=>{
+    const { userid } = req.params;
+    const token = req.headers["authorization"].split(" ")[1];
+    try {
+        const varification = Jwt.verify(token, "SECRET");
+        if (varification) {
+          const user = await ExpenseData.find({ userId: userid });
+          res.send({ message: "user got" });
+        } else {
+          return res.status(401).send({"success" : false,message: "Unauthorized"});
+        }
+      } catch (error) {
+        return res.status(401).send({"success" : false,message: "Unauthorized"});
+      }
+})
+
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pdGVzaCIsImlhdCI6MTY3MTI1NDMxOCwiZXhwIjoxNjcxMjU3OTE4fQ.6n6JfghTg5sHGmDEXSexPRH_bjGj4COv4T1CJPz2R3U
 
