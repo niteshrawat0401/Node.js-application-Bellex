@@ -4,18 +4,16 @@ const Userrole = require("../model/user");
 const userRoleRouter = Router();
 
 // POST
-userRoleRouter.post("/role", async(req, res) => {
+userRoleRouter.post("/role", async (req, res) => {
   const { name } = req.body;
   const userdata = await new Userrole({ name });
   userdata.save((err, success) => {
     if (userdata) {
-      return res
-        .status(201)
-        .send({
-          success: true,
-          meassage: "Role created successfully",
-          userdata: success["_doc"],
-        });
+      return res.status(201).send({
+        success: true,
+        meassage: "Role created successfully",
+        userdata: success["_doc"],
+      });
     }
 
     return res
@@ -25,34 +23,29 @@ userRoleRouter.post("/role", async(req, res) => {
 });
 
 // Existuser
-userRoleRouter.post("/exists", async(req, res) => {
+userRoleRouter.post("/exists", async (req, res) => {
   let { name } = req.body;
-  let existuser = await Userrole.findOne({ name:name });
+  let existuser = await Userrole.findOne({ name: name });
   console.log(name);
 
   try {
     if (existuser) {
-        {
-          return res
-            .status(400)
-            .send({
-              "success": false,
-              meassage: `Role with ${name} already present`,
-            });
-        }
-      } 
+      {
+        return res.status(400).send({
+          success: false,
+          meassage: `Role with ${name} already present`,
+        });
+      }
+    }
     //   Invalid
-      return res
+    return res
       .status(400)
       .send({ success: false, meassage: `Role ${name} is invalid` });
   } catch (error) {
-        return res
+    return res
       .status(400)
       .send({ success: false, meassage: `Role ${error} is invalid` });
-    
   }
-
- 
 });
 
 // Invalid
