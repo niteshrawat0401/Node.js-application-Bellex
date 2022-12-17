@@ -1,13 +1,16 @@
 const { Router } = require("express");
 const ExpenseData = require("../model/expense");
-
+const Jwt = require("jsonwebtoken");
 const expenseRouter = Router();
 
 // Post expene
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lMyIsImlhdCI6MTY3MTMwNjc3MSwiZXhwIjoxNjcxMzEwMzcxfQ.6rQ2kGtkb3NwgfHbzbrYeP2B8SU15se3UUq6ezpdmOg
 expenseRouter.post("/:userid/expense", async (req, res) => {
   const { title, amount, date } = req.body;
   let { userid } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
+  
+  console.log(token);
   let expenses = await new ExpenseData({
     title,
     amount,
@@ -15,7 +18,8 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
     userId: userid,
   });
   expenses.save((err, success) => {
-    if (token) {
+    const varification = Jwt.verify(token, "SECRET");
+    if (varification) {
       return res
         .status(201)
         .send({

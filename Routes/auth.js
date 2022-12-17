@@ -75,7 +75,7 @@ authRouter.post("/newToken", (req, res) => {
   const refreshToken = req.headers["authorization"].split(" ")[1];
 
   const validation = Jwt.verify(refreshToken, "REFRESHPASSWORD");
-  console.log("valid", validation);
+//   console.log("valid", validation);
   if (validation) {
     const newPrimaryToken = Jwt.sign({ username }, "SECRET", {
       expiresIn: "1 hour",
@@ -88,6 +88,7 @@ authRouter.post("/newToken", (req, res) => {
 authRouter.get("/profile/:id", async (req, res) => {
   const { id } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
+  console.log(token);
   try {
     const varification = Jwt.verify(token, "SECRET");
     //   console.log("valid",varification);
