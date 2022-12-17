@@ -4,9 +4,9 @@ const Userrole = require("../model/user");
 const userRoleRouter = Router();
 
 // POST
-userRoleRouter.post("/role", (req, res) => {
+userRoleRouter.post("/role", async(req, res) => {
   const { name } = req.body;
-  const userdata = new Userrole({ name });
+  const userdata = await new Userrole({ name });
   userdata.save((err, success) => {
     if (userdata) {
       return res
@@ -25,31 +25,46 @@ userRoleRouter.post("/role", (req, res) => {
 });
 
 // Existuser
-userRoleRouter.post("/exists", (req, res) => {
+userRoleRouter.post("/exists", async(req, res) => {
   let { name } = req.body;
-  let existuser = Userrole.find({ name });
-  if (existuser) {
-    {
+  let existuser = await Userrole.findOne({ name:name });
+  console.log(name);
+
+  try {
+    if (existuser) {
+        {
+          return res
+            .status(400)
+            .send({
+              "success": false,
+              meassage: `Role with ${name} already present`,
+            });
+        }
+      } 
+    //   Invalid
       return res
-        .status(400)
-        .send({
-          success: false,
-          meassage: `Role with ${name} already present`,
-        });
-    }
+      .status(400)
+      .send({ success: false, meassage: `Role ${name} is invalid` });
+  } catch (error) {
+        return res
+      .status(400)
+      .send({ success: false, meassage: `Role ${error} is invalid` });
+    
   }
+
+ 
 });
 
 // Invalid
-userRoleRouter.post("/invalid", async (req, res) => {
-  let { name } = req.body;
-  let invaliduser = await Userrole.find({ name });
-  // console.log(invaliduser);
-  if (invaliduser !== name) {
-    return res
-      .status(400)
-      .send({ success: false, meassage: `Role ${name} is invalid` });
-  }
-});
+// userRoleRouter.post("/invalid", async (req, res) => {
+//   let { name } = req.body;
+//   let invaliduser = await Userrole.find({ name });
+//   // console.log(invaliduser);
+//   if (invaliduser !== name) {
+//     return res
+//       .status(400)
+//       .send({ success: false, meassage: `Role ${name} is invalid` });
+//   }
+// });
 
 module.exports = userRoleRouter;

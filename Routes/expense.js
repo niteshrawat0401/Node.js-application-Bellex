@@ -36,11 +36,11 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
 // "date": "19-12-2022"
 
 // validations fails
-expenseRouter.post("/:userid/validfail", (req, res) => {
+expenseRouter.post("/:userid/validfail", async(req, res) => {
   let { userid } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
 
-  const user = ExpenseData.find({ userId: userid });
+  const user = await ExpenseData.find({ userId: userid });
   try {
     const validation = Jwt.verify(token, "SECRET");
     if (!validation) {

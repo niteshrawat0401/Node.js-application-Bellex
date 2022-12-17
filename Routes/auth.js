@@ -26,23 +26,30 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/userexists", async (req, res) => {
   const { username } = req.body;
   const user = await User.findOne({ username });
-  console.log(user);
+    // console.log(username);
   if (user)
     return res
       .status(400)
-      .send({ success: false, message: `username ${user} already present` });
+      .send({ "success": false, message: `username ${user} already present` });
+
+    //   Validation errors
+      return res
+      .status(400)
+      .send({ success: false, message: `username should correct` });
 });
 
 // Validation errors
-authRouter.post("/usererr", async (req, res) => {
-  const { username } = req.body;
-  const user = await User.findOne({ username });
-  console.log(user);
-  if (!user)
-    return res
-      .status(400)
-      .send({ success: false, message: `username ${user} already present` });
-});
+// authRouter.post("/usererr", async (req, res) => {
+//   const { username } = req.body;
+//   const user = await User.findOne({ username });
+//   console.log(username);
+//   if (!user)
+//     return res
+//       .status(400)
+//       .send({ success: false, message: `username should correct` });
+
+//       return res.send(user)
+// });
 
 // Log In
 authRouter.post("/login", async (req, res) => {
