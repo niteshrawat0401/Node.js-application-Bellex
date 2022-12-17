@@ -5,6 +5,7 @@ const Jwt = require("jsonwebtoken");
 const authRouter= Router();
 
 
+
 // Sign up
 authRouter.post("/signup", async(req,res)=>{
     const newuser = await new User(req.body);
@@ -19,6 +20,7 @@ authRouter.post("/signup", async(req,res)=>{
       });
 })
 
+
 // username alrady exist
 authRouter.post("/userexists", async(req,res)=>{
     const { username } = req.body;
@@ -30,6 +32,7 @@ authRouter.post("/userexists", async(req,res)=>{
             .send({success: false ,message: `username ${user} already present`});
 })
 
+
 // Validation errors
 authRouter.post("/usererr", async(req,res)=>{
     const { username } = req.body;
@@ -40,6 +43,7 @@ authRouter.post("/usererr", async(req,res)=>{
             .status(400)
             .send({success: false ,message: `username ${user} already present`});
 })
+
 
 
 // Log In
@@ -57,12 +61,14 @@ authRouter.post("/login", async(req,res)=>{
     const refreshToken= Jwt.sign({username}, "REFRESHPASSWORD", {expiresIn: "20days"});
 
     let { _id } = correctUser[0];
-    console.log(correctUser[0]);
+    // console.log(correctUser[0]);
     return res.status(200).send({  "success":true, token: token,   refreshToken: refreshToken, _id  })
 })
 
+
 authRouter.post("/newToken", (req, res) => {
     const refreshToken = req.headers["authorization"].split(" ")[1];
+    
     const validation = Jwt.verify(refreshToken, "REFRESHPASSWORD");
     if (validation) {
       const newPrimaryToken = Jwt.sign({ username }, "SECRET", {
@@ -71,5 +77,6 @@ authRouter.post("/newToken", (req, res) => {
       return res.send({ token: newPrimaryToken });
     }
   });
+
 
 module.exports= authRouter

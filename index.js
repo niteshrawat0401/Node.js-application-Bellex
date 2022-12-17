@@ -2,6 +2,8 @@ const express = require("express");
 const connect = require("./db/db");
 const userRoleRouter = require("./Routes/userrole");
 const authRouter = require("./Routes/auth");
+const expenseRouter = require("./Routes/expense");
+
 
 const app = express();
 
@@ -10,6 +12,7 @@ app.use(express.json());
 
 app.use("/users", userRoleRouter);
 app.use("/auth", authRouter);
+app.use("/userexpen", expenseRouter)
 
 app.get("/", (req, res) => {
   res.send("Hello");
