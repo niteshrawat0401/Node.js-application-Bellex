@@ -8,8 +8,8 @@ const UserSchema = new Schema({
   },
   password: {
     type: Number,
-      min: 8,
-      min: 15,
+    min: 8,
+    min: 15,
   },
 });
 
