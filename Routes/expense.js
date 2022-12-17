@@ -43,13 +43,20 @@ expenseRouter.post("/:userid/invalid" ,async (req, res)=>{
           const user = await ExpenseData.findOne({ _id: id });
           res.send({ message: "user not wrong" });
         } else {
-          return res.status(401).send("Unauthorized");
+          return res.status(401).send({"success" : false,message: "Unauthorized"});
         }
       } catch (error) {
-        return res.status(401).send("Unauthorized");
+        return res.status(401).send({"success" : false,message: "Unauthorized"});
       }
 })
 
+// GET /expense/summary
+expenseRouter.get("/:userid/expense/summary", async (req, res) => {
+    const { userid } = req.params;
+    const userSummary = await ExpenseData.find({ userId: userid });
+   const {title,amount,date} = userSummary
+    res.send(userSummary);
+  });
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pdGVzaCIsImlhdCI6MTY3MTI1NDMxOCwiZXhwIjoxNjcxMjU3OTE4fQ.6n6JfghTg5sHGmDEXSexPRH_bjGj4COv4T1CJPz2R3U
 
