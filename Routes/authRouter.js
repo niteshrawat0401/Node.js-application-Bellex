@@ -1,46 +1,37 @@
 const { Router } = require("express");
-const User = require("../model/authuser");
+const User = require("../model/authUser");
 const Jwt = require("jsonwebtoken");
 
 const authRouter = Router();
 
 // -----Signup API------
 authRouter.post("/signup", async (req, res) => {
-  const newuser = await new User(req.body);
-  console.log(newuser.username.length);
+  const { username, password } = req.body;
+  const user = await User.findOne({ username: username, password: password });
 
-  if(newuser.username.length <3 ||  newuser.username.length  > 10){
-    res.send({  "success": false, message : "Charactor should between 3 and 10"})
-  } 
-  if(newuser.password.length <8 ||  newuser.password.length  > 15){
-    res.send({  "success": false, message : "Password should between 8 and 15"})
-  } 
-  newuser.save((err, success) => {
-    try {
+  if (username.length < 3 || username.length > 10) {
+    res.send({ success: false, message: "Charactor should between 3 and 10" });
+  }
+  if (password.length < 8 || password.length > 15) {
+    res.send({ success: false, message: "Password should between 8 and 15" });
+  }
+  try {
+    if (user?.username) {
+      return res
+        .status(400)
+        .send({ success: false, message: `username ${user} already present` });
+    } else {
+      const newUser = new User({ username, password });
+      await newUser.save();
       return res.status(201).send({
         success: true,
         message: "Sign up Successfully",
-        newuser: success["_doc"],
+        newUser,
       });
-    } catch (error) {
-      return res.status(500).send({ message: "Something wen wrong" });
     }
-  });
-});
-
-// Username alrady exist
-authRouter.post("/userexists", async (req, res) => {
-  const { username } = req.body;
-  const user = await User.findOne({ username });
-  if (user)
-    return res
-      .status(400)
-      .send({ success: false, message: `username ${user} already present` });
-
-  //   Validation errors
-  return res
-    .status(400)
-    .send({ success: false, message: `username should correct` });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // -----Login API------

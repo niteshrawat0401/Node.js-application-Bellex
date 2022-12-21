@@ -1,8 +1,8 @@
 const express = require("express");
 const connect = require("./db/db");
-const userRoleRouter = require("./Routes/userrole");
-const authRouter = require("./Routes/auth");
-const expenseRouter = require("./Routes/expense");
+const userRoleRouter = require("./Routes/userRoleRouter");
+const authRouter = require("./Routes/authRouter");
+const expenseRouter = require("./Routes/expenseRouter");
 
 const app = express();
 
