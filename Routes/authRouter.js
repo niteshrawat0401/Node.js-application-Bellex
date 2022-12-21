@@ -12,25 +12,74 @@ authRouter.post("/signup", async (req, res) => {
   if (username.length < 3 || username.length > 10) {
     res.send({ success: false, message: "Charactor should between 3 and 10" });
   }
-  if (password.length < 8 || password.length > 15) {
-    res.send({ success: false, message: "Password should between 8 and 15" });
+
+  let smallCase = "abcdefghijklmnopqrstuvwxyz";
+  let upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let num = "1234567890";
+
+  if (password.length > 15 || password.length < 8) {
+    return res.status({
+      message: "password should be between 8 to 15 characters long",
+    });
   }
-  try {
-    if (user?.username) {
-      return res
-        .status(400)
-        .send({ success: false, message: `username ${user} already present` });
-    } else {
-      const newUser = new User({ username, password });
-      await newUser.save();
-      return res.status(201).send({
-        success: true,
-        message: "Sign up Successfully",
-        newUser,
-      });
+  let flag = true;
+  for (let i = 0; i < password.length; i++) {
+    if (smallCase.includes(password[i])) {
+      flag = false;
+      break;
     }
-  } catch (error) {
-    console.log(error);
+  }
+
+  if (flag == true) {
+    return res.status({
+      message: "password should contain atleast one small case",
+    });
+  }
+
+  for (let i = 0; i < smallCase.length; i++) {
+    if (upperCase.includes(password[i])) {
+      flag = true;
+      break;
+    }
+  }
+
+  if (flag == false) {
+    return res.status({
+      message: "password should contain atleast one upper case",
+    });
+  }
+  for (let i = 0; i < smallCase.length; i++) {
+    if (num.includes(password[i])) {
+      flag = false;
+      break;
+    }
+  }
+
+  if (flag == true) {
+    return res.status({
+      message: "password should contain atleast one number",
+    });
+  }
+  // res.status({message: "password is correct"})
+  else {
+    try {
+      if (user?.username) {
+        return res.status(400).send({
+          success: false,
+          message: `username ${username} already present`,
+        });
+      } else {
+        const newUser = new User({ username, password });
+        await newUser.save();
+        return res.status(201).send({
+          success: true,
+          message: "Sign up Successfully",
+          newUser,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 });
 

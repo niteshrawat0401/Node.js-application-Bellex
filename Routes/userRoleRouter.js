@@ -55,3 +55,6 @@ userRoleRouter.post("/invalid", async (req, res) => {
 });
 
 module.exports = userRoleRouter;
+// "title": "machine",
+// "amount": 123456789,
+// "date": "17-12-2022"
