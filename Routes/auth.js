@@ -7,6 +7,14 @@ const authRouter = Router();
 // -----Signup API------
 authRouter.post("/signup", async (req, res) => {
   const newuser = await new User(req.body);
+  console.log(newuser.username.length);
+
+  if(newuser.username.length <3 ||  newuser.username.length  > 10){
+    res.send({  "success": false, message : "Charactor should between 3 and 10"})
+  } 
+  if(newuser.password.length <8 ||  newuser.password.length  > 15){
+    res.send({  "success": false, message : "Password should between 8 and 15"})
+  } 
   newuser.save((err, success) => {
     try {
       return res.status(201).send({
