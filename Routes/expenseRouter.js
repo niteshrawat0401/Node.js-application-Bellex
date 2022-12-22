@@ -9,36 +9,44 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
   let { userid } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
 
-  console.log(token);
-  let expenses = await new ExpenseData({
-    title,
-    amount,
-    date,
-    userId: userid,
-  });
-  expenses.save((err, success) => {
-    try {
-      const varification = Jwt.verify(token, "SECRET");
-      if (varification) {
-        return res.status(201).send({
-          status: true,
-          message: `Expense with ${userid} created successfully`,
-          success: success["_doc"],
-        });
-      }
+  if (title.length < 3 || title.length > 10) {
+    res.send({ success: false, message: "Charactor should between 3 and 10" });
+  }
+  // if( amount  >= 1 amount > 1000){
+  //   res.send({ success: false, message: "Amount should under 1000" });
+  // }
 
-      // -----validation fail-----
-      else if (!varification) {
+  else{
+    let expenses = new ExpenseData({
+      title,
+      amount,
+      date,
+      userId: userid,
+    });
+    expenses.save((err, success) => {
+      try {
+        const varification = Jwt.verify(token, "SECRET");
+        if (varification) {
+          return res.status(201).send({
+            status: true,
+            message: `Expense with ${userid} created successfully`,
+            success: success["_doc"],
+          });
+        }
+  
+        // -----validation fail-----
+        else if (!varification) {
+          return res
+            .status(400)
+            .send({ success: false, message: "validation fail" });
+        }
+      } catch (error) {
         return res
           .status(400)
           .send({ success: false, message: "validation fail" });
       }
-    } catch (error) {
-      return res
-        .status(400)
-        .send({ success: false, message: "validation fail" });
-    }
-  });
+    });
+  }
 });
 
 //  -----Token invalid-----

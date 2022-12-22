@@ -17,11 +17,6 @@ userRoleRouter.post("/role", async (req, res) => {
           meassage: `Role with ${name} already present`,
         });
       }
-      //  else if (user !== "admin" || user !== "user") {
-      //   return res
-      //     .status(400)
-      //     .send({ success: false, meassage: `Role ${name} is invalid` });
-      // }
     } else {
       const userData = new Userrole({ name });
       await userData.save();
