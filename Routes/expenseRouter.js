@@ -8,7 +8,8 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
   const { title, amount, date } = req.body;
   let { userid } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
-  
+
+  // -----validation fail-----
   if (title.length < 3 || title.length > 10) {
     res.send({ success: false, message: "Charactor should between 3 and 10" });
   }
@@ -31,32 +32,11 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
             success: success["_doc"],
           });
         }
-
-        // -----validation fail-----
-        else if (!varification) {
-          return res
-            .status(400)
-            .send({ success: false, message: "validation fail" });
-        }
       } catch (error) {
-        return res
-          .status(400)
-          .send({ success: false, message: "validation fail" });
+        // -----Token invalid-----
+        return res.send({ success: false, message: "Unauthorized" });
       }
     });
-  }
-});
-
-//  -----Token invalid-----
-expenseRouter.post("/:userid/invalid", async (req, res) => {
-  const token = req.headers["authorization"].split(" ")[1];
-  try {
-    const varification = Jwt.verify(token, "SECRET");
-    if (!varification) {
-      return res.status(401).send({ success: false, message: "Unauthorized" });
-    }
-  } catch (error) {
-    return res.status(401).send({ success: false, message: "Unauthorized" });
   }
 });
 
