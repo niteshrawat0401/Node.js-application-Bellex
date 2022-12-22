@@ -8,15 +8,13 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
   const { title, amount, date } = req.body;
   let { userid } = req.params;
   const token = req.headers["authorization"].split(" ")[1];
-
+  
   if (title.length < 3 || title.length > 10) {
     res.send({ success: false, message: "Charactor should between 3 and 10" });
   }
-  // if( amount  >= 1 amount > 1000){
-  //   res.send({ success: false, message: "Amount should under 1000" });
-  // }
-
-  else{
+  if (amount <= 1 || amount > 1000) {
+    res.send({ success: false, message: "Amount should under 1000" });
+  } else {
     let expenses = new ExpenseData({
       title,
       amount,
@@ -33,7 +31,7 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
             success: success["_doc"],
           });
         }
-  
+
         // -----validation fail-----
         else if (!varification) {
           return res
