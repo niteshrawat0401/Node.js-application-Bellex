@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
   let num = "1234567890";
 
   if (password.length > 15 || password.length < 8) {
-    return res.status({
+    return res.send({
       message: "password should be between 8 to 15 characters long",
     });
   }
@@ -31,7 +31,7 @@ authRouter.post("/signup", async (req, res) => {
   }
 
   if (flag == true) {
-    return res.status({
+    return res.send({
       message: "password should contain atleast one small case",
     });
   }
@@ -44,7 +44,7 @@ authRouter.post("/signup", async (req, res) => {
   }
 
   if (flag == false) {
-    return res.status({
+    return res.send({
       message: "password should contain atleast one upper case",
     });
   }
@@ -56,12 +56,10 @@ authRouter.post("/signup", async (req, res) => {
   }
 
   if (flag == true) {
-    return res.status({
+    return res.send({
       message: "password should contain atleast one number",
     });
-  }
-  // res.status({message: "password is correct"})
-  else {
+  } else {
     try {
       if (user?.username) {
         return res.status(400).send({
