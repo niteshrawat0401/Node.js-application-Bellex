@@ -10,7 +10,7 @@ authRouter.post("/signup", async (req, res) => {
   const user = await User.findOne({ username: username, password: password });
 
   if (username.length < 3 || username.length > 10) {
-    res.send({ success: false, message: "Charactor should between 3 and 10" });
+    return res.send({ success: false, message: "Charactor should between 3 and 10" });
   }
 
   let smallCase = "abcdefghijklmnopqrstuvwxyz";

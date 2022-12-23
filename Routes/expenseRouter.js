@@ -11,10 +11,13 @@ expenseRouter.post("/:userid/expense", async (req, res) => {
 
   // -----validation fail-----
   if (title.length < 3 || title.length > 10) {
-    res.send({ success: false, message: "Charactor should between 3 and 10" });
+    return res.send({
+      success: false,
+      message: "Charactor should between 3 and 10",
+    });
   }
   if (amount <= 1 || amount > 1000) {
-    res.send({ success: false, message: "Amount should under 1000" });
+    return res.send({ success: false, message: "Amount should under 1000" });
   } else {
     let expenses = new ExpenseData({
       title,
@@ -47,9 +50,9 @@ expenseRouter.get("/:userid/expense/summary", async (req, res) => {
   const userSummary = await ExpenseData.find({ userId: userid });
   const varification = Jwt.verify(token, "SECRET");
   if (varification) {
-    res.send(userSummary);
-  } else if (userSummary == null) {
-    res.send(0);
+    return res.send(userSummary);
+  } else if (!userSummary) {
+    return res.send(0);
   }
 });
 
